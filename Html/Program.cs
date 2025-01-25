@@ -90,29 +90,30 @@ static HtmlElement BuildTree(List<string> html)
     }
     return root.Children.FirstOrDefault();
 }
-
-
-string url = "https://hebrewbooks.org";
-var html = await Load(url);
-
-var cleanHtml = new Regex("\\s").Replace(html, " ");
-var lines = Regex.Matches(cleanHtml, @"<\/?([A-Za-z][A-Za-z0-9]*)\b[^>]*>|([^<]+)");
-List<string> htmlLines = new List<string>();
-foreach (var line in lines)
+static List<string> ExtractHtmlLines(string html )
 {
-    string l = line.ToString();
-    if (!string.IsNullOrWhiteSpace(l))
+    var cleanHtml = new Regex("\\s").Replace(html, " ");
+    var lines = Regex.Matches(cleanHtml, @"<\/?([A-Za-z][A-Za-z0-9]*)\b[^>]*>|([^<]+)");
+    List<string> htmlLines = new List<string>();
+    foreach (var line in lines)
     {
-        l = l.Replace('<', ' ');
-        l = l.Replace('>', ' ');
-        l = l.Trim();
-        htmlLines.Add(l);
+        string l = line.ToString();
+        if (!string.IsNullOrWhiteSpace(l))
+        {
+            l = l.Replace('<', ' ');
+            l = l.Replace('>', ' ');
+            l = l.Trim();
+            htmlLines.Add(l);
+        }
     }
+    return htmlLines;
 }
+//-----------main------------------
+Console.WriteLine("enter URL");
+string URL = Console.ReadLine();
+string html = await Load(URL);
+List<string> htmlLines= ExtractHtmlLines(html);
 HtmlElement root= BuildTree(htmlLines);
-
-
-
 //------------------------
 Console.WriteLine("enter selector");
 string sel=Console.ReadLine();
