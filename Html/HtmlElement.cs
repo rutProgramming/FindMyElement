@@ -27,18 +27,21 @@ namespace Html
         }
         public IEnumerable<HtmlElement> Descendants()
         {
-            Queue<HtmlElement> q = new Queue<HtmlElement>();
-            q.Enqueue(this);
-            while (q.Count > 0)
+            Queue<HtmlElement> queue = new Queue<HtmlElement>();
+            queue.Enqueue(this);
+
+            while (queue.Count > 0)
             {
-                HtmlElement element = q.Dequeue();
+                HtmlElement element = queue.Dequeue();
+                yield return element; 
+
                 foreach (HtmlElement child in element.Children)
                 {
-                    q.Enqueue(child);
+                    queue.Enqueue(child); 
                 }
-                yield return element;
             }
         }
+      
 
         public IEnumerable<HtmlElement> Ancestors()
         {
